@@ -78,15 +78,16 @@ Revenue is not calculated as price multiplied by quantity.
 
 ## Power BI Analyst layer
 
-The repository now includes an upgraded Power BI Analyst layer built from the same verified data pipeline:
+The repository now includes an upgraded integrated Data Analyst + Power BI Analyst layer built from the same verified data pipeline:
 
-- Eight-page report specification covering executive, commercial, customer, product, logistics, experience, geography and data-quality analysis.
-- Reusable DAX measures for revenue, AOV, retention, delivery, delay severity and freight intensity.
-- Report-ready Power BI insight cards that connect an observed result to the visual or interaction that should communicate it.
-- Drill-through, tooltip, field-parameter, conditional-formatting and accessibility guidance.
-- Explicit QA and reconciliation rules so Power BI totals can be checked against SQL and Python outputs.
+- A live interactive BI workspace with month range, category, state and metric slicers.
+- Click-to-filter charts, cross-context updates, drill-through-style state detail and analyst narrative panels.
+- Sales, customer, logistics, customer-experience, geography and data-quality views.
+- Eight-page native Power BI report blueprint with reusable DAX measures, semantic-model design, drill-through, tooltips and QA controls.
+- Real-data insight cards tied to observed results; no invented forecasts, profit claims or causal claims.
+- Public HTML dashboard for recruiter viewing plus Power BI build artifacts for Power BI Desktop.
 
-**Important:** the final PBIX is still not represented as complete because it must be built and validated in Power BI Desktop.
+**Important:** the public interactive dashboard is the live portfolio visualization. A native `.pbix` is not claimed complete until it is actually built and validated in Power BI Desktop.
 
 [Power BI Analyst case study](docs/job-platform-project-report.md) · [Power BI insight layer](docs/powerbi-analyst-insights.md) · [Report specification](powerbi/report-spec.md)
 
