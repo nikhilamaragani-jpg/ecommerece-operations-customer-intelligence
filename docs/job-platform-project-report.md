@@ -1,15 +1,13 @@
-# E-Commerce Operations & Customer Intelligence - Power BI Analyst Case Study
+# E-Commerce Operations & Customer Intelligence
+## Complete Integrated Data Analyst + Power BI Analyst Project Report
 
-## Executive summary
+### Project positioning
+Flagship real-data portfolio project combining Data Analyst and Power BI Analyst capability in one workflow:
+**Business question -> data quality -> SQL -> Python/Pandas -> KPI definitions -> analytical model -> Power BI/DAX -> interactive dashboard -> insight -> recommendation -> QA**
 
-This project analyzes the public Olist Brazilian E-Commerce Public Dataset as a real-data Data Analyst case study. The upgraded Power BI layer focuses on what a BI/Power BI Analyst would need to deliver: a controlled semantic model, reusable DAX measures, purposeful dashboard interactions, evidence-backed insight cards, data-quality checks, and clear limitations.
-
-The observed dataset contains historical anonymized marketplace transactions from 2016-09-04 to 2018-10-17.
-
-## Verified project snapshot
-
+### 1. Verified project baseline
 | KPI | Observed result |
-| --- | ---: |
+|---|---:|
 | Merchandise revenue | R$13,494,400.74 |
 | Sales-eligible orders | 98,199 |
 | Unique customers | 94,983 |
@@ -20,190 +18,175 @@ The observed dataset contains historical anonymized marketplace transactions fro
 | Cancellation rate | 0.63% |
 | Freight value | R$2,241,126.29 |
 
-## Power BI Analyst insight layer
+Source order timestamp span: 2016-09-04 to 2018-10-17.
 
-### 1. Revenue concentration
+### 2. Source and scope
+Source: Olist Brazilian E-Commerce Public Dataset.
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 
-Observation: The top five product categories contribute about 39.8% of merchandise revenue.
+Tables used include orders, order items, customers, products, payments, reviews, sellers and geography.
 
-Why it matters: A Power BI analyst can make category concentration visible with a ranked bar chart and a revenue-share measure, then provide drill-through to category detail.
+### Critical source-grain rule
+The Olist order-items source contains order_item_id but no quantity field. Therefore merchandise revenue is the sum of price across eligible order lines. The project never invents a price x quantity calculation.
 
-Caution: Revenue concentration is not profitability. The dataset does not provide complete business-cost data for a reliable profit claim.
+Orders are counted as distinct order IDs so multi-category orders are not double-counted in executive KPIs. Payments, reviews, orders and order items remain separate analytical grains.
 
-### 2. Geographic concentration
+### 3. Data Analyst capabilities
+- Business-question framing
+- Data profiling and quality checks
+- Eight SQL analysis modules
+- Python/Pandas preparation and analysis
+- KPI engineering
+- Customer and RFM analysis
+- Product/category analysis
+- Logistics and delivery analysis
+- Customer experience analysis
+- Geography analysis
+- Evidence-based recommendations
 
-Observation: The top three customer states contribute about 63.4% of merchandise revenue. Sao Paulo (SP) alone contributes about 38.3% of revenue, with 95.5% observed on-time delivery.
+### 4. Data quality baseline
+| Check | Observed |
+|---|---:|
+| Orders rows | 99,441 |
+| Order-item rows | 112,650 |
+| Customer rows | 99,441 |
+| Product rows | 32,951 |
+| Review rows | 100,000 |
+| Payment rows | 103,886 |
+| Seller rows | 3,095 |
+| Duplicate order IDs | 0 |
+| Duplicate customer IDs | 0 |
+| Missing customer IDs in orders | 0 |
+| Missing product categories | 610 |
+| Missing review scores | 0 |
+| Missing delivered dates | 2,965 |
+| Non-positive price lines | 0 |
+| Canceled orders | 625 |
 
-Why it matters: A geographic performance page can combine revenue, order volume, on-time delivery and review score, with state-level drill-through.
+### 5. Power BI Analyst capability
+The native Power BI blueprint uses separate fact tables for orders, order items, payments and reviews, with shared date, customer, product, seller and geography dimensions.
 
-Caution: State performance differences are descriptive; they do not identify the operational cause.
+Core reusable measures include Revenue, Orders, Customers, AOV, Repeat Customers, Repeat Customer Rate, On-Time Delivery Rate, Late Delivery Rate, Severe Delay Share, Freight Value, Freight-to-Revenue %, and Category Revenue Share.
 
-### 3. Retention opportunity
+### 6. Native Power BI report architecture
+1. Executive Overview
+2. Sales & Revenue
+3. Customer Intelligence
+4. Product Performance
+5. Logistics & Delivery
+6. Customer Experience
+7. Geographic Performance
+8. Data Quality & Methodology
 
-Observation: Only 3.04% of observed customers placed more than one sales-eligible order.
+### 7. Interactive public dashboard
+The live browser-based BI workspace includes:
+- Month range
+- Category filter
+- State filter
+- Revenue / Orders / Freight metric selector
+- Click-to-filter category charts
+- Click-to-filter state charts
+- Context-sensitive KPI cards
+- Sales Explorer
+- Customer / RFM Intelligence
+- Logistics & Customer Experience
+- Geography
+- QA & Methodology
+- State drill-through-style detail
 
-The descriptive RFM distribution is:
+Live dashboard:
+https://nikhilamaragani-jpg.github.io/projects/ecommerce-operations-intelligence/dashboard/
 
-| Segment | Customers | Customer share | Revenue share |
-| --- | ---: | ---: | ---: |
-| Potential Loyalists | 44,492 | 46.8% | 32.0% |
-| Loyal Customers | 26,387 | 27.8% | 35.4% |
-| Champions | 12,712 | 13.4% | 29.6% |
-| At Risk | 11,392 | 12.0% | 3.0% |
+### 8. Evidence-backed insights
+- Top five categories contribute about 39.8% of merchandise revenue.
+- Top three customer states contribute about 63.4% of merchandise revenue.
+- Repeat-customer rate is 3.04%.
+- On-time delivery is 93.23% for qualifying delivered orders.
+- Order-weighted review averages are about 4.28/5 for on-time orders and 2.26/5 for late orders.
+- Freight is about 16.6% of merchandise revenue.
 
-Why it matters: Power BI can show the repeat-customer KPI beside segment size and segment revenue, helping a business user distinguish retention scale from revenue contribution.
+Delivery/review differences are treated as observed associations, not causal effects.
 
-Caution: RFM segments are descriptive. They are not a predictive churn model.
+### 9. RFM customer intelligence
+| Segment | Customers |
+|---|---:|
+| Potential Loyalists | 44,492 |
+| Loyal Customers | 26,387 |
+| Champions | 12,712 |
+| At Risk | 11,392 |
 
-### 4. Delivery and customer experience
+RFM is descriptive segmentation, not predictive churn modeling.
 
-Observation: Among orders with both delivered and estimated delivery dates, 93.2% were on time. The observed average review score is materially lower for late orders than for on-time orders.
+### 10. Dashboard portfolio beyond the flagship
+The main portfolio retains multiple dashboard examples:
 
-Using order-level review averages in the delivery population, the review gap is about 2.02 points: roughly 4.28/5 for on-time orders versus 2.26/5 for late orders.
+- E-Commerce Operations & Customer Intelligence - real Olist data; primary evidence.
+- Retail Sales & Profitability - deterministic synthetic data; foundational practice.
+- Customer Retention Cohorts - deterministic synthetic data; retention practice.
+- Campfly Sales Analysis and Netflix Analysis - earlier static Power BI workshop exports; supporting evidence.
 
-About 6.8% of qualifying delivered orders are late, and approximately 43.8% of late orders are 8+ days late.
+The portfolio labels evidence status so practice dashboards are never mistaken for real business findings.
 
-Why it matters: A Power BI analyst can make delay severity and customer experience visible together, using a severity matrix, tooltip detail, and state/category filtering.
+### 11. Basic -> advanced progression
+| Stage | Capability |
+|---|---|
+| Foundation | Business questions and dataset understanding |
+| Data quality | Grain, duplicates, missing data, exclusions |
+| Analysis | SQL and Python/Pandas |
+| KPI engineering | Revenue, orders, AOV, customer, delivery and freight |
+| Data modeling | Separate facts and shared dimensions |
+| DAX | Reusable measures and filter-aware calculations |
+| Dashboard UX | Slicers, context switching, click-to-filter, drill-through-style views |
+| Insight | Observation, interpretation, recommendations |
+| QA | Reconciliation and reproducibility |
+| Portfolio | Live dashboard, GitHub, report and LinkedIn-ready copy |
 
-Caution: This is an association in observational data, not proof that delivery delay caused lower review scores.
+### 12. Repository evidence
+- analysis/ - reproducible Python build
+- sql/ - eight SQL modules
+- dashboard/ - interactive BI workspace and generated data
+- powerbi/ - DAX and native report blueprint
+- docs/ - methodology, quality, insights, limitations and project report
+- .github/workflows/ - automated build and validation
 
-### 5. Freight intensity
+Standalone project:
+https://github.com/nikhilamaragani-jpg/ecommerece-operations-customer-intelligence
 
-Observation: Observed freight value is R$2.24M, equal to about 16.6% of merchandise revenue.
+### 13. Current project status
+Complete:
+- Real-data analytical pipeline
+- Data-quality layer
+- SQL library
+- Python/Pandas analytics
+- Interactive public dashboard
+- Portfolio dashboard collection
+- Power BI model specification
+- DAX specification
+- Insight documentation
+- QA/reconciliation framework
+- Recruiter-facing project report
 
-Why it matters: A freight-to-revenue KPI can reveal where logistics burden is relatively high and support category/state comparisons.
+Native Power BI next step:
+Build and validate the final PBIX in Power BI Desktop using the documented model, DAX and report specification. The project does not claim a completed PBIX until that file has actually been built and checked.
 
-Caution: Freight value is not equivalent to total fulfillment cost, gross margin, or profit.
+### 14. LinkedIn-ready project
+Title: E-Commerce Operations & Customer Intelligence | Power BI + SQL + Python
 
-### 6. Payment mix
+Description: Built a real-data e-commerce analytics case study using the Olist Brazilian E-Commerce Public Dataset. Combined Data Analyst and Power BI Analyst workflows across data quality, SQL, Python/Pandas, KPI engineering, semantic-model design, DAX, interactive dashboard filtering, customer/RFM analysis, logistics, customer experience, geography, insight communication, and QA. Verified results include R$13.49M merchandise revenue across 98,199 sales-eligible orders, 94,983 unique customers, a 3.04% repeat-customer rate, 93.23% on-time delivery, and a 4.07/5 average review score.
 
-Observation: Credit-card payment records account for about 78.3% of observed payment value.
+### 15. Recruiter walkthrough
+Open in this order:
+1. Interactive dashboard
+2. GitHub repository
+3. Complete project report
+4. Power BI model/DAX files
+5. Supporting dashboards
 
-Why it matters: A payment-mix visual provides a useful commercial context layer and can be filtered by time, state or category where the model supports those relationships.
+One-minute explanation:
+I built a real-data e-commerce analytics project from the Olist marketplace dataset. I handled data quality, SQL and Python analysis, then designed the Power BI semantic and KPI layer and turned the outputs into an interactive dashboard. The project demonstrates the complete path from business question to validated KPI to decision-ready insight.
 
-Caution: Payment records are one-to-many at the order level, so payment values must not be summed after an uncontrolled join to order-item rows.
-
-## Interactive public dashboard
-
-The recruiter-facing dashboard is now an interactive BI workspace, not a static screenshot. It supports month-range, category, state and metric controls; click-to-filter charts; context-sensitive KPI cards; analyst narrative; sales exploration; descriptive customer/RFM analysis; logistics and customer-experience analysis; geography; data-quality QA; and state drill-through-style detail.
-
-The public dashboard is a browser-based portfolio visualization built from the repository's real-data analytical cube. It is intentionally not described as a hosted native Power BI Service report.
-
-## Power BI report design
-
-### Page 1 - Executive Overview
-- KPI cards: Revenue, Orders, Customers, AOV, Repeat Rate, Avg Review, On-Time Rate
-- Monthly revenue trend
-- Top categories
-- Top states
-- Evidence-based insight panel
-- Slicers: date, state, category
-
-### Page 2 - Sales & Revenue
-- Revenue trend
-- Revenue share by category
-- Revenue by state
-- AOV
-- Freight value
-- Freight-to-revenue ratio
-- Payment mix
-
-### Page 3 - Customer Intelligence
-- Repeat-customer rate
-- Orders per customer
-- RFM segment distribution
-- Segment revenue
-- Customer share by segment
-- Descriptive retention observations
-
-### Page 4 - Product Performance
-- Category revenue
-- Order-line volume
-- Freight value by category
-- Revenue share
-- Review score by category
-- Top products where product-level grain is appropriate
-
-### Page 5 - Logistics & Delivery
-- On-time delivery rate
-- Late delivery rate
-- Delay severity
-- Delivery performance by state
-- Review score by delivery group
-- Drill-through to state operational detail
-
-### Page 6 - Customer Experience
-- Review score distribution
-- Review score by delivery group
-- Review score by category
-- Review score by geography
-- Clear association / causality wording
-
-### Page 7 - Geographic Performance
-- State revenue
-- State orders
-- State customers
-- State on-time rate
-- State review score
-- Map plus sortable analytical matrix
-- Conditional formatting for performance exceptions
-
-### Page 8 - Data Quality & Methodology
-- Source row counts
-- Duplicate checks
-- Missing-field checks
-- Exclusions
-- Grain definitions
-- KPI definitions
-- Limitations
-- Data freshness / historical-period note
-
-## Report interactions that demonstrate Power BI analyst capability
-
-- Synchronized date, state and category slicers where useful
-- Metric selector / field parameter for Revenue, Orders, On-Time Rate and Review Score
-- Tooltip pages for state and category context
-- Drill-through pages for state and category investigation
-- Conditional formatting for operational exceptions
-- Bookmarks for Executive, Commercial and Operations views
-- Accessible titles, labels, tab order and non-color-only status cues
-- Minimal slicers; every control should answer a specific business question
-
-## Data-model controls
-
-The source contains multiple one-to-many tables. The model should keep separate facts for orders, order items, payments and reviews.
-
-Shared dimensions should include date, customer, product, seller and geography.
-
-Do not flatten all facts into one table and then sum values without grain control.
-
-## Critical source-grain rule
-
-The Olist order-items table has order_item_id but no quantity column. Merchandise revenue is therefore the sum of price across eligible order lines. It is not price x quantity.
-
-## Power BI QA checklist
-
-Before publishing a PBIX:
-1. Reconcile Revenue to the Python/SQL baseline.
-2. Reconcile Orders and Customers under the same exclusion rules.
-3. Test filter behavior for date, state and category.
-4. Confirm payment values are not duplicated by item joins.
-5. Confirm review metrics use the intended order/review grain.
-6. Confirm blanks and missing dates are handled explicitly.
-7. Check totals, subtotals and drill-through results.
-8. Confirm accessibility and readable mobile/layout behavior.
-9. Add an explicit historical dataset note.
-10. Recheck every executive insight against the underlying measure.
-
-## Project status
-
-Completed: real-data pipeline, SQL modules, Python analytics, recruiter-facing interactive dashboard, Power BI model design, DAX measure definitions, Power BI insight layer and evidence documentation.
-
-Still required for a true PBIX deliverable: building and validating the final PBIX in Power BI Desktop. The portfolio does not claim a completed PBIX until that file has been actually built and checked.
-
-## Links
-
-- Live dashboard: https://nikhilamaragani-jpg.github.io/projects/ecommerce-operations-intelligence/dashboard/
-- Portfolio: https://nikhilamaragani-jpg.github.io/
-- Repository: https://github.com/nikhilamaragani-jpg/ecommerece-operations-customer-intelligence
-- Source dataset: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+### 16. Portfolio links
+Portfolio: https://nikhilamaragani-jpg.github.io/
+Interactive flagship: https://nikhilamaragani-jpg.github.io/projects/ecommerce-operations-intelligence/dashboard/
+GitHub profile: https://github.com/nikhilamaragani-jpg
+LinkedIn: https://www.linkedin.com/in/nikhil-sai-amaragani-219115382
