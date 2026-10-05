@@ -24,7 +24,6 @@ Do not join multiple one-to-many fact tables into one flattened table and then s
 - Orders
 - Customers
 - Average Order Value
-- Units Sold
 - Freight Value
 - Average Review Score
 - On-Time Delivery Rate
