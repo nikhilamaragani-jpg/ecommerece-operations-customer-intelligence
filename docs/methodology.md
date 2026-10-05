@@ -14,7 +14,7 @@ Organize analysis around revenue, customers, products, logistics, reviews and ge
 Check row counts before and after joins. Watch for one-to-many multiplication.
 
 ## 4. Metric definitions
-Revenue = sum(price × quantity) for selected sale lines.
+Revenue = sum(price) for selected order lines because the source has no quantity field.
 Order = distinct order_id.
 Customer = customer_unique_id for customer-level metrics.
 AOV = revenue / distinct orders.
