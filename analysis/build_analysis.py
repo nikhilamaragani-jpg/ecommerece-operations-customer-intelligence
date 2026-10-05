@@ -343,6 +343,22 @@ def build():
     def clean_records(frame):
         return frame.astype(object).where(pd.notna(frame), None).to_dict(orient="records")
 
+    order_cube = (
+        interactive_base.groupby(["month","state"], as_index=False)
+        .agg(
+            revenue=("line_revenue","sum"),
+            freight_value=("freight_value","sum"),
+            orders=("order_id","nunique"),
+        )
+    )
+    category_order_cube = (
+        interactive_base.groupby(["month","category","state"], as_index=False)
+        .agg(
+            revenue=("line_revenue","sum"),
+            freight_value=("freight_value","sum"),
+            orders=("order_id","nunique"),
+        )
+    )
     interactive = {
         "months": sorted(cube["month"].dropna().unique().tolist()),
         "categories": sorted(cube["category"].dropna().unique().tolist()),
