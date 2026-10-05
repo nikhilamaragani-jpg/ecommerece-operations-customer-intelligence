@@ -176,6 +176,55 @@ def build():
         direction = "lower" if late_score < ontime_score else "higher"
         insights.append(f"Orders classified as late have an average review score {direction} than on-time orders ({late_score:.2f} vs {ontime_score:.2f}); this is an association, not proof of causality.")
 
+    top5_share_pct = categories.head(5)["revenue"].sum() / total_revenue * 100 if total_revenue else 0
+    top3_state_share_pct = state.head(3)["revenue"].sum() / total_revenue * 100 if total_revenue else 0
+    qualifying_delivery_orders = int(delivery["order_id"].nunique())
+    late_delivery_orders = int(delivery.loc[delivery["delay_days"] > 0, "order_id"].nunique())
+    severe_delay_orders = int(delivery.loc[delivery["delay_days"] >= 8, "order_id"].nunique())
+    late_delivery_rate_pct = late_delivery_orders / qualifying_delivery_orders * 100 if qualifying_delivery_orders else 0
+    severe_delay_share_of_late_pct = severe_delay_orders / late_delivery_orders * 100 if late_delivery_orders else 0
+    freight_ratio_pct = sales_orders["freight_value"].sum() / total_revenue * 100 if total_revenue else 0
+    payment_total = pay["payment_value"].sum()
+    credit_card_share_pct = float(pay.loc[pay["payment_type"] == "credit_card", "payment_value"].sum() / payment_total * 100) if payment_total else 0
+    powerbi_insights = [
+        {
+            "title":"Revenue concentration",
+            "value":"Top 5 categories = " + f"{top5_share_pct:.1f}% of revenue",
+            "evidence":category_name(top_cat["category"]) + " leads the category ranking at " + f"{top_cat['revenue_share_pct']:.1f}% of merchandise revenue.",
+            "powerbi_use":"Ranked bar chart, revenue-share KPI and category drill-through."
+        },
+        {
+            "title":"Geographic concentration",
+            "value":"Top 3 states = " + f"{top3_state_share_pct:.1f}% of revenue",
+            "evidence":top_state["state"] + " leads state revenue at " + f"{money(top_state['revenue']):,.0f}" + " across " + f"{int(top_state['orders']):,}" + " orders.",
+            "powerbi_use":"State ranking, matrix, conditional formatting and drill-through."
+        },
+        {
+            "title":"Retention opportunity",
+            "value":"Repeat-customer rate = " + f"{repeat_rate:.2f}%",
+            "evidence":"The observed customer base contains a small repeat-purchase population in this marketplace dataset.",
+            "powerbi_use":"KPI card, RFM mix, segment revenue and customer-share comparison."
+        },
+        {
+            "title":"Delivery and experience",
+            "value":"Late delivery = " + f"{late_delivery_rate_pct:.1f}% of qualifying orders",
+            "evidence":"8+ day delays are " + f"{severe_delay_share_of_late_pct:.1f}% of late orders" + "; late orders show lower average reviews than on-time orders.",
+            "powerbi_use":"Delay-severity chart, review comparison, tooltips and state filtering."
+        },
+        {
+            "title":"Freight intensity",
+            "value":"Freight = " + f"{freight_ratio_pct:.1f}% of merchandise revenue",
+            "evidence":"Observed freight value is R$" + f"{sales_orders['freight_value'].sum():,.0f}" + "; this is a logistics metric, not profit.",
+            "powerbi_use":"Freight-to-revenue KPI and category/state decomposition."
+        },
+        {
+            "title":"Payment mix",
+            "value":"Credit card = " + f"{credit_card_share_pct:.1f}% of payment value",
+            "evidence":"Payment records are modeled separately to avoid one-to-many multiplication with order-item rows.",
+            "powerbi_use":"Payment-mix visual with controlled fact-table relationships."
+        },
+    ]
+
     recommendations = [
         f"Protect availability and merchandising for {category_name(top_cat['category'])}, which contributes {top_cat['revenue_share_pct']:.1f}% of revenue.",
         f"Prioritize operational review for {top_state['state']} because it is the highest-revenue customer state; compare demand with its delivery performance before changing capacity.",
@@ -330,6 +379,7 @@ def build():
         "payments":pay.round(2).to_dict(orient="records"),
         "review_delivery":review_delivery.round(2).to_dict(orient="records"),
         "rfm_segments":customer_orders.groupby("segment",as_index=False).agg(customers=("customer_unique_id","nunique"),revenue=("revenue","sum")).sort_values("revenue",ascending=False).round(2).to_dict(orient="records"),
+        "powerbi_insights":powerbi_insights,
         "insights":insights,"recommendations":recommendations
     }
     (OUT/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2,default=str),encoding="utf-8")
