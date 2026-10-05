@@ -184,6 +184,110 @@ def build():
     if not math.isnan(ontime_score) and not math.isnan(late_score) and late_score < ontime_score:
         recommendations.append("Investigate late-delivery orders as a customer-experience risk because late orders have a lower observed review score; validate with additional operational data before making causal claims.")
 
+    # Interactive BI cube: compact, real-data aggregates for the public dashboard.
+    interactive_base = (
+        items.merge(
+            orders[["order_id","order_purchase_timestamp","sales_eligible","customer_id"]],
+            on="order_id",
+            how="left"
+        )
+        .merge(
+            customer_dim[["customer_id","customer_unique_id","customer_state"]],
+            on="customer_id",
+            how="left"
+        )
+    )
+    interactive_base = interactive_base[
+        interactive_base["sales_eligible"]
+        & interactive_base["line_revenue"].gt(0)
+    ].copy()
+    interactive_base["month"] = interactive_base["order_purchase_timestamp"].dt.to_period("M").astype(str)
+    interactive_base["state"] = interactive_base["customer_state"].fillna("Unknown")
+    cube = (
+        interactive_base.groupby(["month","category","state"], dropna=False, as_index=False)
+        .agg(
+            revenue=("line_revenue","sum"),
+            freight_value=("freight_value","sum"),
+            orders=("order_id","nunique"),
+            order_lines=("order_item_id","count"),
+        )
+    )
+    cube["revenue"] = cube["revenue"].round(2)
+    cube["freight_value"] = cube["freight_value"].round(2)
+    cube["revenue_share_pct"] = (cube["revenue"] / total_revenue * 100).round(4)
+    category_state_customers = (
+        interactive_base.groupby(["category","state"], dropna=False, as_index=False)
+        .agg(customers=("customer_unique_id","nunique"))
+    )
+    service_base = (
+        order_values.merge(
+            customer_dim[["customer_id","customer_unique_id","customer_state"]],
+            on="customer_id",
+            how="left"
+        )
+    )
+    service_base["state"] = service_base["customer_state"].fillna("Unknown")
+    service_base["delay_group"] = pd.cut(
+        (
+            service_base["order_delivered_customer_date"]
+            - service_base["order_estimated_delivery_date"]
+        ).dt.days,
+        bins=[-np.inf,0,3,7,np.inf],
+        labels=["On time","1–3 days late","4–7 days late","8+ days late"]
+    ).astype(str)
+    service_category = (
+        interactive_base[["order_id","category","state"]]
+        .drop_duplicates()
+        .merge(
+            service_base[[
+                "order_id","is_canceled","order_delivered_customer_date",
+                "order_estimated_delivery_date","review_score","delay_group"
+            ]],
+            on="order_id",
+            how="left"
+        )
+    )
+    service_category["qualified_delivery"] = (
+        service_category["order_delivered_customer_date"].notna()
+        & service_category["order_estimated_delivery_date"].notna()
+    )
+    service_category["on_time"] = (
+        service_category["qualified_delivery"]
+        & (
+            service_category["order_delivered_customer_date"]
+            <= service_category["order_estimated_delivery_date"]
+        )
+    )
+    service_cube = (
+        service_category.groupby(["category","state"], as_index=False)
+        .agg(
+            orders=("order_id","nunique"),
+            qualified_delivery_orders=("qualified_delivery","sum"),
+            on_time_orders=("on_time","sum"),
+            avg_review=("review_score","mean"),
+        )
+    )
+    service_cube["on_time_rate_pct"] = (
+        service_cube["on_time_orders"] / service_cube["qualified_delivery_orders"] * 100
+    ).where(service_cube["qualified_delivery_orders"] > 0)
+    service_cube["late_orders"] = (
+        service_cube["qualified_delivery_orders"] - service_cube["on_time_orders"]
+    )
+    service_cube["avg_review"] = service_cube["avg_review"].round(2)
+    interactive = {
+        "months": sorted(cube["month"].dropna().unique().tolist()),
+        "categories": sorted(cube["category"].dropna().unique().tolist()),
+        "states": sorted(cube["state"].dropna().unique().tolist()),
+        "cube": cube.to_dict(orient="records"),
+        "category_state_customers": category_state_customers.to_dict(orient="records"),
+        "service_cube": service_cube.round(2).to_dict(orient="records"),
+        "note": "All interactive metrics come from the real Olist source through this repository's reproducible pipeline. Customer and RFM views are full-period descriptive analytics unless explicitly stated otherwise."
+    }
+    (OUT/"interactive.json").write_text(
+        json.dumps(interactive, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8"
+    )
+
     summary = {
         "meta":{
             "project":"E-Commerce Operations & Customer Intelligence",
