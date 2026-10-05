@@ -340,19 +340,22 @@ def build():
         return g.round(2)
     service_category_summary = service_summary(["category"])
     service_state_summary = service_summary(["state"])
+    def clean_records(frame):
+        return frame.astype(object).where(pd.notna(frame), None).to_dict(orient="records")
+
     interactive = {
         "months": sorted(cube["month"].dropna().unique().tolist()),
         "categories": sorted(cube["category"].dropna().unique().tolist()),
         "states": sorted(cube["state"].dropna().unique().tolist()),
-        "cube": cube.to_dict(orient="records"),
-        "category_state_customers": category_state_customers.to_dict(orient="records"),
-        "service_cube": service_cube.round(2).to_dict(orient="records"),
-        "service_category_summary": service_category_summary.to_dict(orient="records"),
-        "service_state_summary": service_state_summary.to_dict(orient="records"),
+        "cube": clean_records(cube),
+        "category_state_customers": clean_records(category_state_customers),
+        "service_cube": clean_records(service_cube.round(2)),
+        "service_category_summary": clean_records(service_category_summary),
+        "service_state_summary": clean_records(service_state_summary),
         "note": "All interactive metrics come from the real Olist source through this repository's reproducible pipeline. Customer and RFM views are full-period descriptive analytics unless explicitly stated otherwise."
     }
     (OUT/"interactive.json").write_text(
-        json.dumps(interactive, ensure_ascii=False, indent=2, default=str),
+        json.dumps(interactive, ensure_ascii=False, indent=2, allow_nan=False),
         encoding="utf-8"
     )
 
