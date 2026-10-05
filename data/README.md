@@ -21,3 +21,8 @@ Expected source tables include:
 Place source files in a local `raw/` directory and run the profiling/cleaning workflow.
 
 Do not publish raw data unless the current dataset terms permit redistribution.
+
+
+## Grain note
+
+The order-items table uses order_item_id as its line identifier and does not provide a quantity field. The project therefore calculates merchandise revenue as the sum of price across eligible order lines.
