@@ -1,0 +1,50 @@
+name: Build real-data analytics
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ecommerce-analytics-main
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install analysis dependencies
+        run: python -m pip install --upgrade pip && pip install pandas numpy
+      - name: Build analytics outputs
+        run: python analysis/build_analysis.py
+      - name: Validate outputs
+        run: python - <<'PY'
+import json
+from pathlib import Path
+data=json.loads(Path('dashboard/data/summary.json').read_text())
+required=['revenue','orders','customers','aov','repeat_customer_rate_pct','avg_review_score','on_time_delivery_pct','cancellation_rate_pct']
+missing=[k for k in required if k not in data['kpis']]
+assert not missing, missing
+assert data['kpis']['orders'] > 0 and data['kpis']['customers'] > 0
+assert len(data['states']) == 27
+print('Validated analytics snapshot')
+PY
+      - name: Commit generated outputs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dashboard/data/summary.json docs/data-quality.md docs/insights.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'chore: rebuild real-data analytics'
+          git push
