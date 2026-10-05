@@ -1,161 +1,123 @@
 # E-Commerce Operations & Customer Intelligence
 
-**Real-world Data Analyst case study**
+**Real-data Data Analyst flagship project**
+**SQL · Python/Pandas · Power BI · Data Quality · Customer Analytics · Logistics · Business Intelligence**
 
-Revenue · Customers · Products · Logistics · Customer Experience · Geography
+## What this project is
 
-## Business question
+A reproducible Data Analyst case study built from the public Olist Brazilian E-Commerce Public Dataset.
 
-How can an e-commerce business use transaction, customer, product, logistics, payment and review data to improve commercial and customer outcomes?
+Workflow:
+Business question → data quality → SQL → Python → data model → visualization → insight → recommendation
 
-## Why this project exists
+## Live links
 
-This is the flagship analytical project for the portfolio. It is deliberately focused on the core Data Analyst workflow rather than machine learning:
+**Interactive dashboard:** https://nikhilamaragani-jpg.github.io/projects/ecommerce-operations-intelligence/dashboard/
 
-**Business question → data quality → SQL → Python → data model → Power BI → insights → recommendations**
+**Portfolio:** https://nikhilamaragani-jpg.github.io/
 
-## Source data
+**LinkedIn:** https://www.linkedin.com/in/nikhil-sai-amaragani-219115382
 
-**Olist Brazilian E-Commerce Public Dataset**
+**Dataset:** https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 
-Official Kaggle data page:
+## Executive snapshot
 
-https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+| KPI | Result |
+|---|---:|
+| Merchandise revenue | R$13,494,400.74 |
+| Sales-eligible orders | 98,199 |
+| Unique customers | 94,983 |
+| Average order value | R$137.42 |
+| Repeat-customer rate | 3.04% |
+| Average review score | 4.07 / 5 |
+| On-time delivery | 93.23% |
+| Cancellation rate | 0.63% |
+| Freight value | R$2,241,126.29 |
 
-The dataset contains about 100K anonymized commercial orders from the Brazilian e-commerce marketplace Olist and multiple related tables covering orders, customers, products, sellers, payments, reviews and geolocation.
+Dataset period: September 2016 to October 2018.
 
-Do not commit the original raw dataset unless the repository explicitly documents why doing so is permitted. Follow the dataset's current license/terms and provide download instructions instead.
+## Why it is analytically credible
 
-## Analytical modules
+- Data quality checks are documented before KPI interpretation.
+- Metrics are calculated with explicit table grain and population rules.
+- SQL and Python are aligned to the same business definitions.
+- The dashboard separates exact 2D analytical comparison from the 3D geographic showcase.
+- Recommendations are clearly separated from observations.
+- Causal claims are avoided for this observational dataset.
 
-### 01 — Executive Performance
-- Total revenue
-- Orders
-- Customers
-- Average order value
-- Average review score
-- On-time delivery rate
-- Cancellation rate
+## Critical source-grain rule
 
-### 02 — Customer Intelligence
-- New vs returning customers
-- Orders per customer
-- Average customer value
-- Repeat purchase rate
-- RFM segmentation
-- Cohort-style repeat behaviour where appropriate
+The Olist order-items table does not contain a quantity field.
 
-### 03 — Product Analytics
-- Revenue by category
-- Order volume
-- Product contribution
-- Freight cost patterns
-- Cancellation/return patterns where the data supports them
+Each row is an order line identified by order_item_id. Therefore:
 
-### 04 — Logistics Analytics
-- Order-to-delivery duration
-- Estimated vs actual delivery
-- On-time rate
-- Delay severity
-- Delivery performance by geography
+Revenue = sum of price across eligible order lines.
 
-### 05 — Customer Experience
-- Review score distribution
-- Review score by category
-- Review score vs delivery performance
-- Review score by geography
-
-### 06 — Geographic Analytics
-- Orders by state
-- Revenue by state
-- Customers by state
-- Delivery performance by state
-- Interactive 2D map
-- Optional 3D geographic showcase
-
-## Analytical rules\n\n**Important source-grain note:** the Olist order-items table uses `order_item_id` rows and does not provide a quantity field. Merchandise revenue is therefore calculated as the sum of `price` across eligible order lines, not `price × quantity`.\n
-
-Do not confuse transaction lines with orders.
-
-Use the correct grain for each metric.
-
-Do not infer causality from observational data.
-
-Clearly distinguish:
-- Observation
-- Interpretation
-- Hypothesis
-- Recommendation
-
-Do not claim profitability unless a valid cost field is available. The primary commercial KPI is revenue.
+Revenue is not calculated as price multiplied by quantity.
 
 ## Project structure
 
-```
-ecommerce-operations-intelligence/
-├── README.md
-├── data/
-├── sql/
-├── python/
-├── notebooks/
-├── powerbi/
-├── dashboard/
-├── docs/
-├── assets/
-├── requirements.txt
-├── .gitignore
-└── LICENSE
-```
+- analysis/ — reproducible Python build pipeline
+- data/ — source-data instructions; raw CSVs are not committed
+- sql/ — eight business-analysis SQL modules
+- dashboard/ — interactive recruiter-facing web dashboard
+- powerbi/ — semantic model, DAX and report specification
+- docs/ — methodology, data quality, insights, limitations and checks
+- .github/workflows/ — automated analytics rebuild
 
-## Status
+## SQL coverage
 
-**Stage:** Automated real-data pipeline + interactive dashboard in repository.\n\nThe GitHub Actions workflow downloads the public source CSVs, runs `analysis/build_analysis.py`, validates the outputs, and commits the compact derived analytics used by the dashboard. The raw source data is not committed. Final Power BI work remains a local `.pbix` deliverable.
+1. Data quality
+2. Sales and revenue
+3. Customer analysis
+4. Product/category analysis
+5. Logistics and delivery
+6. Reviews and customer experience
+7. Geography
+8. Business questions
 
-## Reproducibility target
+## Power BI handoff
 
-A reviewer should be able to understand:
-1. where the data came from
-2. what each table represents
-3. what was cleaned
-4. how KPIs were defined
-5. which SQL answered which business question
-6. how Python was used
-7. how the Power BI model was structured
-8. what the final dashboard says
-9. what limitations remain
+The repository contains the recommended analytical model, core DAX measures and a seven-page report specification.
 
-## Live dashboard\n\n`dashboard/index.html` is the recruiter-facing analytical experience. It includes KPI cards, monthly revenue, category and state analysis, RFM segmentation, delivery/review analysis, recommendations, and a restrained 3D geographic showcase.\n\n## Power BI handoff
+The final PBIX is intentionally not represented as complete because it must be built and validated in Power BI Desktop.
 
-See `powerbi/report-spec.md` for the seven-page report design and `powerbi/dax-measures.md` for the core measure definitions. The final PBIX must be built and validated in Power BI Desktop.
+## Reproducibility
 
-### 3D geographic precision
+Install the dependencies from requirements.txt, place source CSVs under data/raw when using local files, and run:
 
-The 3D view uses the analytical state-level dataset and geographic centroids rather than polygon boundaries. This keeps the visualization lightweight and reproducible while avoiding the false impression of administrative boundary precision. The 2D analytical charts remain the primary source for exact comparison; the 3D view is an interactive geographic exploration layer.
+python analysis/build_analysis.py
 
-## Portfolio deliverables
+The pipeline regenerates the compact dashboard data plus the evidence-oriented data-quality and insights documents.
 
-- Executive Power BI dashboard
-- Sales/revenue analysis
-- Customer analytics
-- Product analytics
-- Logistics dashboard
-- Customer-experience dashboard
-- Data-quality report
-- SQL library
-- Python notebooks/scripts
-- Interactive web dashboard
-- 2D geographic exploration
-- One restrained 3D geographic visualization
+GitHub Actions validates those outputs and commits refreshed derived artifacts.
+
+## Key findings
+
+1. Health Beauty is the largest revenue category at about R$1.26M, or 9.3% of merchandise revenue.
+2. SP is the largest customer state at about R$5.16M and 41,125 orders.
+3. The observed repeat-customer rate is only 3.04%.
+4. 93.23% of qualifying delivered orders arrive by the estimated date.
+5. Late-delivery orders have a lower average review score than on-time orders; this is an association, not proof of causality.
+
+See docs/insights.md for the full evidence and recommendations.
 
 ## Limitations
 
-The Olist dataset represents a historical, anonymized marketplace and should not be presented as current market intelligence. Conclusions apply to the observed dataset, not to Brazilian e-commerce as a whole or today's global market.
+- Historical dataset; not current market intelligence.
+- One anonymized marketplace; not the whole Brazilian or global market.
+- Observational data; associations do not establish causality.
+- Revenue is not profit because reliable business-cost data is unavailable.
+- Customer segmentation is descriptive, not predictive.
+- The 3D view uses state centroids rather than administrative boundaries.
 
-## Source attribution
+## Attribution
 
-Dataset: Olist Brazilian E-Commerce Public Dataset
+Dataset: Olist Brazilian E-Commerce Public Dataset.
+The dataset remains subject to its own current license and terms.
 
-Kaggle:
-https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+## Career positioning
 
-Always include the current dataset license/terms in the final published project.
+This repository demonstrates Data Analyst capability through evidence of work. It is not presented as client or professional experience.
+
+Primary positioning: Data Analyst | SQL | Power BI | Python | Business Intelligence
