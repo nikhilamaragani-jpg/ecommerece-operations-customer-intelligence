@@ -76,11 +76,19 @@ Revenue is not calculated as price multiplied by quantity.
 7. Geography
 8. Business questions
 
-## Power BI handoff
+## Power BI Analyst layer
 
-The repository contains the recommended analytical model, core DAX measures and a seven-page report specification.
+The repository now includes an upgraded Power BI Analyst layer built from the same verified data pipeline:
 
-The final PBIX is intentionally not represented as complete because it must be built and validated in Power BI Desktop.
+- Eight-page report specification covering executive, commercial, customer, product, logistics, experience, geography and data-quality analysis.
+- Reusable DAX measures for revenue, AOV, retention, delivery, delay severity and freight intensity.
+- Report-ready Power BI insight cards that connect an observed result to the visual or interaction that should communicate it.
+- Drill-through, tooltip, field-parameter, conditional-formatting and accessibility guidance.
+- Explicit QA and reconciliation rules so Power BI totals can be checked against SQL and Python outputs.
+
+**Important:** the final PBIX is still not represented as complete because it must be built and validated in Power BI Desktop.
+
+[Power BI Analyst case study](docs/job-platform-project-report.md) · [Power BI insight layer](docs/powerbi-analyst-insights.md) · [Report specification](powerbi/report-spec.md)
 
 ## Reproducibility
 
@@ -100,7 +108,7 @@ GitHub Actions validates those outputs and commits refreshed derived artifacts.
 4. 93.23% of qualifying delivered orders arrive by the estimated date.
 5. Late-delivery orders have a lower average review score than on-time orders; this is an association, not proof of causality.
 
-See docs/insights.md for the full evidence and recommendations.
+See docs/insights.md for the evidence and recommendations, and docs/powerbi-analyst-insights.md for the Power BI Analyst interpretation layer.
 
 ## Limitations
 
