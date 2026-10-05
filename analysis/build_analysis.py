@@ -359,19 +359,27 @@ def build():
             orders=("order_id","nunique"),
         )
     )
+    compact_cube = clean_records(cube[["month","category","state","revenue","freight_value","orders"]].round(2))
+    compact_order_cube = clean_records(order_cube[["month","state","orders"]])
+    compact_category_order_cube = clean_records(category_order_cube[["month","category","state","orders"]])
+    compact_service_cube = clean_records(service_cube[["category","state","orders","on_time_rate_pct","avg_review"]])
+    compact_category_service = clean_records(service_category_summary[["category","orders","on_time_rate_pct","avg_review"]])
+    compact_state_service = clean_records(service_state_summary[["state","orders","on_time_rate_pct","avg_review"]])
+
     interactive = {
         "months": sorted(cube["month"].dropna().unique().tolist()),
         "categories": sorted(cube["category"].dropna().unique().tolist()),
         "states": sorted(cube["state"].dropna().unique().tolist()),
-        "cube": clean_records(cube),
-        "category_state_customers": clean_records(category_state_customers),
-        "service_cube": clean_records(service_cube.round(2)),
-        "service_category_summary": clean_records(service_category_summary),
-        "service_state_summary": clean_records(service_state_summary),
-        "note": "All interactive metrics come from the real Olist source through this repository's reproducible pipeline. Customer and RFM views are full-period descriptive analytics unless explicitly stated otherwise."
+        "cube": compact_cube,
+        "order_cube": compact_order_cube,
+        "category_order_cube": compact_category_order_cube,
+        "service_cube": compact_service_cube,
+        "service_category_summary": compact_category_service,
+        "service_state_summary": compact_state_service,
+        "note": "All interactive metrics come from the real Olist source through this repository's reproducible pipeline."
     }
     (OUT/"interactive.json").write_text(
-        json.dumps(interactive, ensure_ascii=False, indent=2, allow_nan=False),
+        json.dumps(interactive, ensure_ascii=False, separators=(",",":"), allow_nan=False),
         encoding="utf-8"
     )
 
