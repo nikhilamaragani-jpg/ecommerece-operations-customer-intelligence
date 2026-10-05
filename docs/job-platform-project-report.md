@@ -83,6 +83,12 @@ Why it matters: A payment-mix visual provides a useful commercial context layer 
 
 Caution: Payment records are one-to-many at the order level, so payment values must not be summed after an uncontrolled join to order-item rows.
 
+## Interactive public dashboard
+
+The recruiter-facing dashboard is now an interactive BI workspace, not a static screenshot. It supports month-range, category, state and metric controls; click-to-filter charts; context-sensitive KPI cards; analyst narrative; sales exploration; descriptive customer/RFM analysis; logistics and customer-experience analysis; geography; data-quality QA; and state drill-through-style detail.
+
+The public dashboard is a browser-based portfolio visualization built from the repository's real-data analytical cube. It is intentionally not described as a hosted native Power BI Service report.
+
 ## Power BI report design
 
 ### Page 1 - Executive Overview
