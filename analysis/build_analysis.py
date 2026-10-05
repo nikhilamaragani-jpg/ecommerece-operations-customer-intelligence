@@ -163,7 +163,7 @@ def build():
     ontime_rows = review_delivery[review_delivery["delay_group"]=="On time"]
     late_rows = review_delivery[review_delivery["delay_group"]!="On time"]
     ontime_score = float(ontime_rows["avg_review"].iloc[0]) if len(ontime_rows) else float("nan")
-    late_score = float(late_rows["avg_review"].mean()) if len(late_rows) else float("nan")
+    late_score = float(np.average(late_rows["avg_review"], weights=late_rows["orders"])) if len(late_rows) and late_rows["orders"].sum() > 0 else float("nan")
 
     insights = [
         f"{category_name(top_cat['category'])} is the largest revenue category at {money(top_cat['revenue']):,.0f}, representing {pct(top_cat['revenue_share_pct']):.1f}% of merchandise revenue.",
