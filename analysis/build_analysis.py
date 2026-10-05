@@ -274,6 +274,23 @@ def build():
         service_cube["qualified_delivery_orders"] - service_cube["on_time_orders"]
     )
     service_cube["avg_review"] = service_cube["avg_review"].round(2)
+    def service_summary(group_cols):
+        g = service_category.groupby(group_cols, as_index=False).agg(
+            orders=("order_id","nunique"),
+            qualified_delivery_orders=("qualified_delivery","sum"),
+            on_time_orders=("on_time","sum"),
+            avg_review=("review_score","mean"),
+        )
+        g["on_time_rate_pct"] = (
+            g["on_time_orders"] / g["qualified_delivery_orders"] * 100
+        ).where(g["qualified_delivery_orders"] > 0)
+        g["late_orders"] = g["qualified_delivery_orders"] - g["on_time_orders"]
+        g["late_rate_pct"] = (
+            g["late_orders"] / g["qualified_delivery_orders"] * 100
+        ).where(g["qualified_delivery_orders"] > 0)
+        return g.round(2)
+    service_category_summary = service_summary(["category"])
+    service_state_summary = service_summary(["state"])
     interactive = {
         "months": sorted(cube["month"].dropna().unique().tolist()),
         "categories": sorted(cube["category"].dropna().unique().tolist()),
@@ -281,6 +298,8 @@ def build():
         "cube": cube.to_dict(orient="records"),
         "category_state_customers": category_state_customers.to_dict(orient="records"),
         "service_cube": service_cube.round(2).to_dict(orient="records"),
+        "service_category_summary": service_category_summary.to_dict(orient="records"),
+        "service_state_summary": service_state_summary.to_dict(orient="records"),
         "note": "All interactive metrics come from the real Olist source through this repository's reproducible pipeline. Customer and RFM views are full-period descriptive analytics unless explicitly stated otherwise."
     }
     (OUT/"interactive.json").write_text(
