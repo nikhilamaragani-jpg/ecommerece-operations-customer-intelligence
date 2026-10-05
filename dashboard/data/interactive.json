@@ -125217,7 +125217,7 @@
       "qualified_delivery_orders": 0,
       "on_time_orders": 0,
       "avg_review": 1.0,
-      "on_time_rate_pct": NaN,
+      "on_time_rate_pct": null,
       "late_orders": 0
     },
     {
@@ -128617,7 +128617,7 @@
       "qualified_delivery_orders": 0,
       "on_time_orders": 0,
       "avg_review": 1.0,
-      "on_time_rate_pct": NaN,
+      "on_time_rate_pct": null,
       "late_orders": 0
     },
     {
@@ -129677,7 +129677,7 @@
       "qualified_delivery_orders": 0,
       "on_time_orders": 0,
       "avg_review": 1.0,
-      "on_time_rate_pct": NaN,
+      "on_time_rate_pct": null,
       "late_orders": 0
     },
     {
@@ -131247,7 +131247,7 @@
       "qualified_delivery_orders": 0,
       "on_time_orders": 0,
       "avg_review": 3.0,
-      "on_time_rate_pct": NaN,
+      "on_time_rate_pct": null,
       "late_orders": 0
     },
     {
@@ -132097,7 +132097,7 @@
       "qualified_delivery_orders": 0,
       "on_time_orders": 0,
       "avg_review": 1.0,
-      "on_time_rate_pct": NaN,
+      "on_time_rate_pct": null,
       "late_orders": 0
     },
     {
